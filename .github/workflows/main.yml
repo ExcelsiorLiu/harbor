@@ -1,34 +1,25 @@
 # This is a basic workflow to help you get started with Actions
-name: CI
+name: RELEASE
 on:
   push:
-    branches: 
-      - main
-      - release-*
-    tags:
+     tags:
       - v*
-  pull_request:
-    branches: 
-      -main
-
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get branch name (merge)
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
-
-      - name: Get branch name (pull request)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-
-      - name: Debug
-        run: echo ${{ env.BRANCH_NAME }}
- 
+    
+      - name: Get api
+        run: gh api \
+               -H "Accept: application/vnd.github.v3+json" \
+               /repos/OWNER/REPO/releases
+        env:
+          tag: ${{ tag_name }}
+          branch: ${{ target_commitish }}
+          
       - name: Get version
+        with: 
         run: wget https://raw.githubusercontent.com/goharbor/harbor/main/VERSION
 
 #       - name: Get release notes
