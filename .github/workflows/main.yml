@@ -16,8 +16,8 @@ jobs:
               -H "Accept: application/vnd.github.v3+json" 
               /repos/OWNER/REPO/releases
         env:
-          tag: ${{ "tag_name" }}
-          branch: ${{ "target_commitish" }}
+          tag: ${{ 'tag_name' }}
+          branch: target_commitish
           
       - name: Get version
         run: wget https://raw.githubusercontent.com/goharbor/harbor/main/VERSION
