@@ -11,15 +11,15 @@ jobs:
     steps:
     
       - name: Get api
-        run: gh api \
-               -H "Accept: application/vnd.github.v3+json" \
-               /repos/OWNER/REPO/releases
+        run: |
+          gh api 
+              -H "Accept: application/vnd.github.v3+json" 
+              /repos/OWNER/REPO/releases
         env:
           tag: ${{ tag_name }}
           branch: ${{ target_commitish }}
           
       - name: Get version
-        with: 
         run: wget https://raw.githubusercontent.com/goharbor/harbor/main/VERSION
 
 #       - name: Get release notes
