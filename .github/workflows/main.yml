@@ -9,15 +9,25 @@ jobs:
  test:
     runs-on: ubuntu-latest
     steps:
+    
       - uses: actions/checkout@v2
+      
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
+        run: echo "TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Get tag
         run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
-
-
+          echo $TAG
+          echo ${{ env.TAG }}
+          
+      - name: Get branch
+        run: |
+          curl \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }}
+          branch=${{ github.ref }}
+          echo "BRANCH=${target_commitish}" >> $GITHUB_ENV 
+          echo $BRANCH
+          echo ${{ env.BRANCH }}
 
 
 
