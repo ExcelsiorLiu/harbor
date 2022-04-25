@@ -25,7 +25,7 @@ jobs:
             https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }} -s | jq
                     
       - name: Get branch
-        run: |
+        run: 
           echo $BRANCH | python -c "import sys, json; print json.load(sys.stdin)['target_commitish']"
           
 
