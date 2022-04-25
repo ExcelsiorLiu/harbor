@@ -24,10 +24,11 @@ jobs:
           curl \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }}
-          branch=${{ github.ref }}
-          echo "BRANCH=${target_commitish}" >> $GITHUB_ENV 
-          echo $BRANCH
-          echo ${{ env.BRANCH }}
+            
+          target_commitish=${{ github.ref }}
+          echo "TARGET_COMMITISH=${target_commitish}" >> $GITHUB_ENV 
+          echo $TARGET_COMMITISH
+          echo ${{ env.TARGET_COMMITISH }}
 
 
 
