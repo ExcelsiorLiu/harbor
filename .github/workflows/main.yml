@@ -25,8 +25,9 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }}
             
-          target_commitish=${{ github.ref }}
-          echo "TARGET_COMMITISH=${target_commitish}" >> $GITHUB_ENV 
+      - name: Get branch
+        run: |
+          echo "TARGET_COMMITISH=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
           echo $TARGET_COMMITISH
           echo ${{ env.TARGET_COMMITISH }}
 
