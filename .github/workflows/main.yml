@@ -26,10 +26,8 @@ jobs:
                     
       - name: Get branch
         run: |
-          echo "TARGET_COMMITISH=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
-          echo $TARGET_COMMITISH
-          echo ${{ env.TARGET_COMMITISH }}
-
+          echo $BRANCH | python -c "import sys, json; print json.load(sys.stdin)['target_commitish']"
+          
 
 
 
@@ -47,6 +45,9 @@ jobs:
  #         echo $TAG
   #        echo ${{ env.TAG }}
          
-         
+     #    echo "TARGET_COMMITISH=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+       #   echo $TARGET_COMMITISH
+       #   echo ${{ env.TARGET_COMMITISH }}
+#
          
          
