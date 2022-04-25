@@ -23,6 +23,7 @@ jobs:
           curl \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }}
+          echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['data']"
             
       - name: Get branch
         run: |
