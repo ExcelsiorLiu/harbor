@@ -19,7 +19,7 @@ jobs:
           echo $TAG
           echo ${{ env.TAG }}
           
-      - name: Get branch
+      - name: Get release
         run: |
           curl \
             -H "Accept: application/vnd.github.v3+json" \
