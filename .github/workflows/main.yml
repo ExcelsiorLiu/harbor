@@ -28,7 +28,7 @@ jobs:
         run: |
           wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x ./jq
-          cp jq /usr/bin
+          sudo cp jq /usr/bin
           RESULT=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/v2.4.3-rc12)
           USER=$(echo ${BRANCH} | jq  '.target_commitish')
           
