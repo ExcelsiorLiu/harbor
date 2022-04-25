@@ -22,13 +22,8 @@ jobs:
         run: |
           curl \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }}
-          wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-          chmod +x ./jq
-          cp jq /usr/bin
-          RESULT=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
-          USER=$(echo ${RESULT} | jq  '.name')
-          
+            https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }} -s | jq
+                    
       - name: Get branch
         run: |
           echo "TARGET_COMMITISH=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
