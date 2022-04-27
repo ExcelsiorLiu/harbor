@@ -24,7 +24,7 @@ jobs:
           wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x ./jq
           sudo cp jq /usr/bin
-          RESULT=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/v2.4.3-rc12)
+          RESULT=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
           USER=$(echo ${BRANCH} | jq  '.target_commitish')
           USER=$(echo ${RELEASE_NOTES} | jq  '.body')  
           
@@ -42,6 +42,8 @@ jobs:
         with:
           path: src/github.com/goharbor/harbor
       - name: Get version
+        if:
+          contains(steps.changed-files.outputs.modified, 'VERSION')
         run: |
           set -x
           env
