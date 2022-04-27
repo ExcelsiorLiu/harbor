@@ -11,7 +11,7 @@ jobs:
     steps:               
       - name: Get tag
         run: |
-          echo "TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
           echo $TAG
           echo ${{ env.TAG }}     
       - name: Get release
@@ -50,7 +50,32 @@ jobs:
           df -h
           release_version=$(cat ./VERSION)
           package_Version=$release_version-'build.'$RELEASE_NOTES
+          
+          #if [[ $BRANCH == "main" ]]; then
+          #  Harbor_Assets_Version=$package_Version
+          #  harbor_target_bucket=$harbor_builds_bucket
+          #else
+          #  Harbor_Assets_Version=$release_version
+          #  harbor_target_bucket=$harbor_releases_bucket/$target_branch
+          #fi
+          #if [[ $BRANCH == "release-"* ]]; then
+          #  Harbor_Build_Base_Tag=$release_version
+          #else
+          #  Harbor_Build_Base_Tag=dev
+          #fi
 
+      
+      - name: Build Package
+        run: |
+          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-online-installer-$TAG-build.$RELEASE_NOTES.tgz
+          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-online-installer-$TAG-build.$RELEASE_NOTES.tgz.asc
+          
+          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-offline-installer-$TAG-build.$RELEASE_NOTES.tgz
+          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-offline-installer-$TAG-build.$RELEASE_NOTES.tgz.asc
+        
+        
+        
+        
 #       - n
 #         me: Get release notes
 #         run: curl \
