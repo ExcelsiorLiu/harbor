@@ -12,40 +12,38 @@ jobs:
       - name: Get tag
         run: |
           echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo $TAG
-          echo ${{ env.TAG }}     
+          echo $tag
+          echo ${{ env.tag }}     
       - name: Get release
         run: |
           curl \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }} -s | jq
+            https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} -s | jq
       - name: Get api data
         run: |
           wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x ./jq
           sudo cp jq /usr/bin
-          BRANCH=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
-          USER=$(echo ${BRANCH} | jq  '.target_commitish')
+          BRANCH=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }})
+          branch=$(echo ${BRANCH} | jq  '.target_commitish')
           
-          RELEASE_NOTES=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
+          RELEASE_NOTES=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }})
           USER=$(echo ${RELEASE_NOTES} | jq  '.body')  
           
       - name: Get branch
         run: |
-          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
-          echo ${{ env.BRANCH }}
+          echo "branch=$branch" >> $GITHUB_ENV
+          echo ${{ env.branch }}
           
       - name: Get release notes
         run: |
-          echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
-          echo ${{ env.RELEASE_NOTES }}
+          echo "release_notes=$release_notes" >> $GITHUB_ENV
+          echo ${{ env.release_notes }}
           
       - uses: actions/checkout@v2
         with:
           path: src/github.com/goharbor/harbor
       - name: Get version
-        if:
-          contains(steps.changed-files.outputs.modified, 'VERSION')
         run: |
           set -x
           env
@@ -69,11 +67,11 @@ jobs:
       
       - name: Build Package
         run: |
-          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-online-installer-$TAG-build.$RELEASE_NOTES.tgz
-          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-online-installer-$TAG-build.$RELEASE_NOTES.tgz.asc
+          wget https://storage.googleapis.com/harbor-releases/$branch/harbor-online-installer-$tag-build.$release_notes.tgz
+          wget https://storage.googleapis.com/harbor-releases/$branch/harbor-online-installer-$tag-build.$release_notes.tgz.asc
           
-          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-offline-installer-$TAG-build.$RELEASE_NOTES.tgz
-          wget https://storage.googleapis.com/harbor-releases/$BRANCH/harbor-offline-installer-$TAG-build.$RELEASE_NOTES.tgz.asc
+          wget https://storage.googleapis.com/harbor-releases/$branch/harbor-offline-installer-$tag-build.$release_notes.tgz
+          wget https://storage.googleapis.com/harbor-releases/$branch/harbor-offline-installer-$tag-build.$release_notes.tgz.asc
         
         
         
