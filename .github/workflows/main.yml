@@ -24,8 +24,10 @@ jobs:
           wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
           chmod +x ./jq
           sudo cp jq /usr/bin
-          RESULT=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
+          BRANCH=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
           USER=$(echo ${BRANCH} | jq  '.target_commitish')
+          
+          RELEASE_NOTES=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.TAG }})
           USER=$(echo ${RELEASE_NOTES} | jq  '.body')  
           
       - name: Get branch
