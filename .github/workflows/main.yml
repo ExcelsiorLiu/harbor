@@ -12,23 +12,14 @@ jobs:
       - name: Get tag
         run: |
           echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo $tag
           echo ${{ env.tag }}     
-      - name: Get release
-        run: |
-          curl \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} -s | jq
+    
       - name: Get api data
         run: |
-          wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-          chmod +x ./jq
-          sudo cp jq /usr/bin
-          BRANCH=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }})
-          branch=$(echo ${BRANCH} | jq  '.target_commitish')
-          
-          RELEASE_NOTES=$(curl -k -s http://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }})
-          USER=$(echo ${RELEASE_NOTES} | jq  '.body')  
+          sudo apt-get install jq
+          data=$(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }})
+          branch=$(echo ${data} | jq  '.target_commitish')
+          release_notes=$(echo ${data} | jq  '.body')  
           
       - name: Get branch
         run: |
@@ -49,21 +40,6 @@ jobs:
           env
           df -h
           release_version=$(cat ./VERSION)
-          package_Version=$release_version-'build.'$RELEASE_NOTES
-          
-          #if [[ $BRANCH == "main" ]]; then
-          #  Harbor_Assets_Version=$package_Version
-          #  harbor_target_bucket=$harbor_builds_bucket
-          #else
-          #  Harbor_Assets_Version=$release_version
-          #  harbor_target_bucket=$harbor_releases_bucket/$target_branch
-          #fi
-          #if [[ $BRANCH == "release-"* ]]; then
-          #  Harbor_Build_Base_Tag=$release_version
-          #else
-          #  Harbor_Build_Base_Tag=dev
-          #fi
-
       
       - name: Build Package
         run: |
@@ -74,7 +50,11 @@ jobs:
           wget https://storage.googleapis.com/harbor-releases/$branch/harbor-offline-installer-$tag-build.$release_notes.tgz.asc
         
         
-        
+#       - name: Get release
+#        run: |
+ #         curl \
+  #          -H "Accept: application/vnd.github.v3+json" \
+   #         https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} -s | jq   
         
 #       - n
 #         me: Get release notes
