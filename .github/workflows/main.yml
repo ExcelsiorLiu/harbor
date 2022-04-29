@@ -22,7 +22,7 @@ jobs:
       
       - name: Get api data
         run: |
-          sudo apt-get install jq
+         #sudo apt-get install jq
           branch=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.target_commitish')) >> $GITHUB_ENV
           release_notes=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.body')) >> $GITHUB_ENV
         #branch=$(echo ${data} | jq -r '.target_commitish' file.json) >> $GITHUB_ENV
