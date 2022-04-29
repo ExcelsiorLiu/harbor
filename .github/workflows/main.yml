@@ -43,12 +43,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: src/github.com/goharbor/harbor
-      - name: Get version
-        run: |
-          set -x
-          env
-          df -h
-          release_version=$(cat ./VERSION)
+#      - name: Get version
+ #       run: |
+  #        set -x
+   #       env
+    #      df -h
+     #     release_version=$(cat ./VERSION)
       
       - name: Build Package
         run: |
