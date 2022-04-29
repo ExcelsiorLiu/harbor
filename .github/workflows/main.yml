@@ -25,19 +25,21 @@ jobs:
       - name: Get api data
         run: |
           sudo apt-get install jq
-          branch=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.target_commitish'))
-          release_notes=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.body'))
-        #branch=$(echo ${data} | jq -r '.target_commitish' file.json)
+          branch=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.target_commitish')) >> $GITHUB_ENV
+          release_notes=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.body')) >> $GITHUB_ENV
+        #branch=$(echo ${data} | jq -r '.target_commitish' file.json) >> $GITHUB_ENV
         #release_notes=$(echo ${data} | jq  '.body')  
           
       - name: Get branch
         run: |
           echo "branch=$branch" >> $GITHUB_ENV
+          echo $branch
           echo ${{ env.branch }}
           
       - name: Get release notes
         run: |
           echo "release_notes=$release_notes" >> $GITHUB_ENV
+          echo $release_notes
           echo ${{ env.release_notes }}
           
       - uses: actions/checkout@v2
