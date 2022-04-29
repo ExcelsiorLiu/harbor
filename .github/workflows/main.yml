@@ -16,6 +16,12 @@ jobs:
           echo $tag
           echo ${{ env.tag }}
            
+      - name: Get release
+        run: |
+           curl \
+             -H "Accept: application/vnd.github.v3+json" \
+             https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} -s | jq 
+      
       - name: Get api data
         run: |
           sudo apt-get install jq
