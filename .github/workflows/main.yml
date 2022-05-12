@@ -28,12 +28,10 @@ jobs:
           echo "prerelease=$(echo $release | jq -r '.prerelease') ">> $GITHUB_ENV
 
       - uses: actions/checkout@v2
-        with:
-          path: src/github.com/goharbor/harbor
-
-      
-      
-      - name: Push docker image 
+      - name: Push docker image
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PWD: ${{secrets.DOCKER_PWD}}
         run: |
           sudo
           wget https://storage.googleapis.com/harbor-releases/$branch/harbor-offline-installer-$tag-build.$release_notes.tgz
@@ -41,7 +39,7 @@ jobs:
           tar -zvxf ./harbor-offline-installer-$tag.tgz
           cd ./harbor
           docker load -i ./harbor.$tag.tar.gz
-          docker login -u $dockerhub_user -p $dockerhub_pwd
+          docker login -u $DOCKER_USER -p $DOCKER_PWD
           for image in $IMAGES
             do
               docker tag $image:$tag goharbor/$image:$tag 
