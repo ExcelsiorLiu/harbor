@@ -22,33 +22,34 @@ jobs:
       
       - name: Get api data
         run: |
-          branch=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.target_commitish')) >> $GITHUB_ENV
-          release_notes=$(echo $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }} | jq '.body')) >> $GITHUB_ENV
-        #branch=$(echo ${data} | jq -r '.target_commitish' file.json) >> $GITHUB_ENV
-        #release_notes=$(echo ${data} | jq  '.body')  
-          
-      - name: Get branch
-        run: |
-          echo "branch=$branch" >> $GITHUB_ENV
-          echo $branch
-          echo ${{ env.branch }}
-          
-      - name: Get release notes
-        run: |
-          echo "release_notes=$release_notes" >> $GITHUB_ENV
-          echo $release_notes
-          echo ${{ env.release_notes }}
-          
+          release= $(curl  -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/ExcelsiorLiu/harbor/releases/tags/${{ env.tag }}) 
+          echo "branch=$(echo $release | jq -r '.target_commitish' )" >> $GITHUB_ENV
+          echo "release_notes=$(echo $release | jq -r '.body') ">> $GITHUB_ENV
+          echo "prerelease=$(echo $release | jq -r '.prerelease') ">> $GITHUB_ENV
+
       - uses: actions/checkout@v2
         with:
           path: src/github.com/goharbor/harbor
-#      - name: Get version
- #       run: |
-  #        set -x
-   #       env
-    #      df -h
-     #     release_version=$(cat ./VERSION)
+
       
+      
+      - name: Push docker image 
+        run: |
+          sudo
+          wget https://storage.googleapis.com/harbor-releases/$branch/harbor-offline-installer-$tag-build.$release_notes.tgz
+          wget https://storage.googleapis.com/harbor-releases/$branch/harbor-offline-installer-$tag-build.$release_notes.tgz.asc
+          tar -zvxf ./harbor-offline-installer-$tag.tgz
+          cd ./harbor
+          docker load -i ./harbor.$tag.tar.gz
+          docker login -u $dockerhub_user -p $dockerhub_pwd
+          for image in $IMAGES
+            do
+              docker tag $image:$tag goharbor/$image:$tag 
+              docker push goharbor/$image:$tag
+            done
+          
+          
+          
       - name: Build Package
         run: |
           wget https://storage.googleapis.com/harbor-releases/$branch/harbor-online-installer-$tag-build.$release_notes.tgz
